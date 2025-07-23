@@ -203,10 +203,10 @@ main().catch((error) => {
 
 ## 📚 Complete Examples
 
-See these patterns in action:
-- [Kafka Correlation Example](../../examples/20-basic-kafka-correlation)
-- [RabbitMQ Broker Example](../../examples/21-basic-rabbitmq-broker)
-- [HTTP Configuration Example](../../examples/09-http-configuration)
+See these patterns in action in the main repository:
+- [Kafka Correlation Example](https://github.com/Syntropysoft/SyntropyLog/tree/main/sub-modules/examples/20-basic-kafka-correlation)
+- [RabbitMQ Broker Example](https://github.com/Syntropysoft/SyntropyLog/tree/main/sub-modules/examples/21-basic-rabbitmq-broker)
+- [HTTP Configuration Example](https://github.com/Syntropysoft/SyntropyLog/tree/main/sub-modules/examples/09-http-configuration)
 
 ## ⚠️ Production Checklist
 

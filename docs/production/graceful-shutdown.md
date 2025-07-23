@@ -130,10 +130,10 @@ kill -INT <your-process-pid>
 
 ## 📚 Examples
 
-See complete examples with boilerplate:
-- [Kafka Correlation Example](../../examples/20-basic-kafka-correlation)
-- [RabbitMQ Broker Example](../../examples/21-basic-rabbitmq-broker)
-- [HTTP Configuration Example](../../examples/09-http-configuration)
+See complete examples with boilerplate in the main repository:
+- [Kafka Correlation Example](https://github.com/Syntropysoft/SyntropyLog/tree/main/sub-modules/examples/20-basic-kafka-correlation)
+- [RabbitMQ Broker Example](https://github.com/Syntropysoft/SyntropyLog/tree/main/sub-modules/examples/21-basic-rabbitmq-broker)
+- [HTTP Configuration Example](https://github.com/Syntropysoft/SyntropyLog/tree/main/sub-modules/examples/09-http-configuration)
 
 ---
 
