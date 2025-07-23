@@ -67,7 +67,7 @@ const config = {
         title: 'SyntropyLog',
         logo: {
           alt: 'SyntropyLog Logo',
-          src: 'img/logo.svg',
+          src: 'img/beaconLog-2.png',
           width: 40,
           height: 40,
         },
