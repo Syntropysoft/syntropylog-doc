@@ -87,21 +87,15 @@
   margin-top: 3rem;
 }
 
-/* Logo styles */
+/* Logo styles - Simplified */
 .navbar__logo img {
-  height: 32px !important;
-  width: auto !important;
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+  height: 32px;
+  width: auto;
+  display: block;
+  visibility: visible;
+  opacity: 1;
 }
 
 .navbar__logo-text {
-  display: none !important;
-}
-
-/* Force logo visibility */
-.navbar__brand img {
-  display: block !important;
-  visibility: visible !important;
+  display: none;
 }
