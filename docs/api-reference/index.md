@@ -10,6 +10,19 @@ sidebar_label: API Reference
 
 SyntropyLog provides a comprehensive API for observability in Node.js applications. This reference covers all public APIs and their usage.
 
+> ⚠️ **CRITICAL**: Before using any API, you **MUST** implement the [Boilerplate](./boilerplate) for graceful shutdown. This is required for ALL applications (development and production).
+
+## 🚨 Critical: Boilerplate (Required)
+
+**Every application MUST include the boilerplate for graceful shutdown:**
+
+- **[Boilerplate API](./boilerplate)** - Complete boilerplate with signal handling
+- **Graceful shutdown** - Ensures logs are flushed before application exit
+- **Signal handling** - Responds properly to Ctrl+C and Kubernetes termination
+- **Resource cleanup** - Closes connections and releases resources
+
+**This is not optional - it's a requirement for reliable applications.**
+
 ## Core Modules
 
 ### Logger
