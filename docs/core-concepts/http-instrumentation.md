@@ -408,7 +408,7 @@ await syntropyLog.init({
 
 ## ⚡ Performance Considerations
 
-- **Minimal overhead** - HTTP instrumentation adds <1ms per request
+- **Minimal overhead** - HTTP instrumentation adds less than 1ms per request
 - **Connection pooling** - Adapters reuse connections when possible
 - **Async operations** - All HTTP calls are non-blocking
 - **Memory efficient** - Singleton pattern prevents connection leaks 
