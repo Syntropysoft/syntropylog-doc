@@ -89,10 +89,19 @@
 
 /* Logo styles */
 .navbar__logo img {
-  height: 32px;
-  width: auto;
+  height: 32px !important;
+  width: auto !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .navbar__logo-text {
-  display: none;
+  display: none !important;
+}
+
+/* Force logo visibility */
+.navbar__brand img {
+  display: block !important;
+  visibility: visible !important;
 }
