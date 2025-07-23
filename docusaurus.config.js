@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'SyntropyLog',
   tagline: 'The Observability Framework for High-Performance Teams',
-  favicon: './assets/beaconLog-2.png',
+  favicon: './assets/favicon.ico',
 
   // Set the production url of your site here
   url: 'https://syntropylog.com',

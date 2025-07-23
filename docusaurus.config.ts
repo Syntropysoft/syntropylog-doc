@@ -7,7 +7,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'SyntropyLog',
   tagline: 'From Chaos to Clarity - The Observability Framework for High-Performance Teams',
-  favicon: './static/favicon.ico',
+  favicon: './assets/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -75,8 +75,10 @@ const config: Config = {
     navbar: {
       title: 'SyntropyLog',
       logo: {
-        alt: 'SyntropyLog',
-        src: 'img/beaconLog-2.png',
+        alt: 'SyntropyLog Logo',
+        src: 'img/beaconLog-2-new.png',
+        width: 40,
+        height: 40,
       },
       items: [
         {
