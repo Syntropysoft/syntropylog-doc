@@ -1,15 +1,15 @@
 # Graceful Shutdown - Critical for Production
 
-> ⚠️ **CRITICAL**: This boilerplate is **MANDATORY** for production applications. Without it, your application may lose logs and crash unexpectedly during Kubernetes pod termination.
+> ⚠️ **CRITICAL**: This boilerplate is **MANDATORY** for ALL applications (development and production). Without it, your application may lose logs and crash unexpectedly when stopped.
 
 ## 🚨 Why Graceful Shutdown is Essential
 
-When Kubernetes sends a termination signal (SIGTERM) to your pod, your application has a limited time to shut down gracefully. Without proper shutdown handling:
+When your application is stopped (either by Ctrl+C in development or SIGTERM in production), it needs time to shut down gracefully. Without proper shutdown handling:
 
 - **Lost logs**: Logs in the queue may never be flushed
 - **Corrupted data**: Incomplete operations may leave data in an inconsistent state
 - **Resource leaks**: Connections to Redis, brokers, and databases may not be closed properly
-- **Pod crashes**: Application may be forcefully killed, causing data loss
+- **Application crashes**: May be forcefully killed, causing data loss
 
 ## 🔧 Required Boilerplate
 
@@ -65,9 +65,9 @@ process.on('SIGTERM', async () => {
 ## 🎯 What This Boilerplate Does
 
 ### **1. Signal Handling**
-- **SIGTERM**: Kubernetes termination signal
-- **SIGINT**: Manual interruption (Ctrl+C)
-- **Graceful response**: Application responds properly to termination signals
+- **SIGTERM**: Kubernetes termination signal (production)
+- **SIGINT**: Manual interruption (Ctrl+C in development)
+- **Graceful response**: Application responds properly to both signals
 
 ### **2. Log Flushing**
 - **`syntropyLog.shutdown()`**: Flushes all pending logs in the queue
@@ -99,25 +99,30 @@ async function main() {
 main().catch(console.error);
 ```
 
-## ⚠️ Production Checklist
+## ⚠️ Application Checklist
 
-Before deploying to production, ensure:
+Before running your application (development or production), ensure:
 
 - ✅ **Boilerplate included**: Graceful shutdown handlers are in place
 - ✅ **Signal handling**: SIGTERM and SIGINT are handled
 - ✅ **Log flushing**: `syntropyLog.shutdown()` is called
 - ✅ **Error handling**: Shutdown errors are logged
-- ✅ **Timeout consideration**: Shutdown completes within Kubernetes grace period
+- ✅ **Development testing**: Test with Ctrl+C to ensure graceful shutdown
+- ✅ **Production readiness**: Shutdown completes within Kubernetes grace period
 
 ## 🔍 Testing Graceful Shutdown
 
 Test your shutdown handling:
 
 ```bash
-# Test SIGTERM handling
+# Development testing (Ctrl+C)
+# Simply press Ctrl+C while your app is running
+# You should see: "🛑 Received SIGINT, shutting down gracefully..."
+
+# Production testing (SIGTERM)
 kill -TERM <your-process-pid>
 
-# Test SIGINT handling
+# Manual SIGINT testing
 kill -INT <your-process-pid>
 
 # Verify logs are flushed before exit
@@ -132,4 +137,4 @@ See complete examples with boilerplate:
 
 ---
 
-**Remember**: This boilerplate is not optional - it's a **production requirement** for reliable, observable applications. 
+**Remember**: This boilerplate is not optional - it's a **requirement for ALL applications** (development and production) for reliable, observable applications. 
