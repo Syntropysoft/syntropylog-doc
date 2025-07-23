@@ -13,11 +13,11 @@ function HomepageHeader() {
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
         <img 
-          src="/img/beaconLog-2.png" 
+          src="/img/syntropylog-logo.png" 
           alt="SyntropyLog Logo" 
           className={styles.heroLogo}
-          width="120"
-          height="120"
+          width="200"
+          height="200"
         />
         <h1 className="hero__title">{siteConfig.title}</h1>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
