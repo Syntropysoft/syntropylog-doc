@@ -320,9 +320,9 @@ When adding new tests:
 
 ## 🔗 Related Examples
 
-- **[Testing patterns with Vitest](./28-testing-patterns-vitest)**
-- **[Testing patterns with Jest](./29-testing-patterns-jest)**
-- **[Advanced testing scenarios](./31-advanced-testing)** (Coming Soon)
+- **[Testing patterns with Vitest](./testing-patterns-vitest)**
+- **[Testing patterns with Jest](./testing-patterns-jest)**
+- **[Advanced testing scenarios](./advanced-testing)** (Coming Soon)
 
 ---
 

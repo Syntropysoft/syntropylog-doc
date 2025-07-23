@@ -313,9 +313,9 @@ When adding new tests:
 
 ## 🔗 Related Examples
 
-- **[Testing patterns with Jest](./29-testing-patterns-jest)**
-- **[Redis context testing](./30-testing-redis-context)**
-- **[Advanced testing scenarios](./31-advanced-testing)** (Coming Soon)
+- **[Testing patterns with Jest](./testing-patterns-jest)**
+- **[Redis context testing](./testing-redis-context)**
+- **[Advanced testing scenarios](./advanced-testing)** (Coming Soon)
 
 ---
 

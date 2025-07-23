@@ -30,9 +30,9 @@ This example will demonstrate how to handle complex testing scenarios that go be
 
 ## Related Examples
 
-- **[Testing patterns with Vitest](./28-testing-patterns-vitest)**
-- **[Testing patterns with Jest](./29-testing-patterns-jest)**
-- **[Redis context testing](./30-testing-redis-context)**
+- **[Testing patterns with Vitest](./testing-patterns-vitest)**
+- **[Testing patterns with Jest](./testing-patterns-jest)**
+- **[Redis context testing](./testing-redis-context)**
 
 ---
 
