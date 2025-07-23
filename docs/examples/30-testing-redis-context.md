@@ -322,7 +322,7 @@ When adding new tests:
 
 - **[Testing patterns with Vitest](./28-testing-patterns-vitest)**
 - **[Testing patterns with Jest](./29-testing-patterns-jest)**
-- **[Advanced testing scenarios](../31-advanced-testing)** (Coming Soon)
+- **[Advanced testing scenarios](./31-advanced-testing)** (Coming Soon)
 
 ---
 

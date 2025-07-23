@@ -172,7 +172,7 @@ const service = new MyService(testHelper.mockSyntropyLog);
 
 ## Next Steps
 
-- **[Getting Started](./getting-started)** - Complete setup guide
-- **[API Reference](./api-reference)** - Full API documentation
-- **[Examples](./examples)** - Production-ready examples
-- **[Production Guide](./production)** - Production deployment guide 
+- **[Getting Started](../getting-started)** - Complete setup guide
+- **[API Reference](../api-reference)** - Full API documentation
+- **[Examples](../examples)** - Production-ready examples
+- **[Production Guide](../production)** - Production deployment guide 
