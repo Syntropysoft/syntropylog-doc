@@ -75,7 +75,7 @@ const config: Config = {
     navbar: {
       title: 'SyntropyLog',
       logo: {
-        alt: 'SyntropyLog Logo',
+        alt: 'SyntropyLog',
         src: 'img/beaconLog-2.png',
       },
       items: [

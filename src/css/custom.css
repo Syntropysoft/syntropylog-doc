@@ -86,3 +86,13 @@
   gap: 2rem;
   margin-top: 3rem;
 }
+
+/* Logo styles */
+.navbar__logo img {
+  height: 32px;
+  width: auto;
+}
+
+.navbar__logo-text {
+  display: none;
+}
