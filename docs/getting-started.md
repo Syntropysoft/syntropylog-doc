@@ -146,10 +146,10 @@ const syntropyLog = SyntropyLog.init({
 
 ## 📚 Next Steps
 
-1. **Explore examples**: Check out the [complete examples](../examples) for advanced use cases
-2. **Production configuration**: Learn about [advanced configuration](../configuration)
-3. **API Reference**: Consult the [API documentation](../api)
-4. **Architecture**: Understand the [design principles](../architecture)
+1. **Explore examples**: Check out the [complete examples](/examples) for advanced use cases
+2. **Production configuration**: Learn about [advanced configuration](/docs/core-concepts/logger)
+3. **API Reference**: Consult the [API documentation](/docs/api-reference/)
+4. **Core Concepts**: Understand the [design principles](/docs/core-concepts/logger)
 
 ## 🆘 Need Help?
 
