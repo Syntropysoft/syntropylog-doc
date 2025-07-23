@@ -7,7 +7,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'SyntropyLog',
   tagline: 'From Chaos to Clarity - The Observability Framework for High-Performance Teams',
-  favicon: './assets/favicon.ico',
+  favicon: '/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
