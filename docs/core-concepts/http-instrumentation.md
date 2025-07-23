@@ -69,7 +69,7 @@ await syntropyLog.init({
       {
         instanceName: 'api',
         adapter: new AxiosAdapter(axios.create()),
-        propagate: [\correlationId', 'userId', 'tenantId'],
+        propagate: ['correlationId', 'userId', 'tenantId'],
       },
     ],
   },
@@ -140,7 +140,7 @@ await syntropyLog.init({
         adapter: new AxiosAdapter(axios.create({ 
           baseURL: 'https://api.users.com' 
         })),
-        propagate: [\correlationId', 'userId'],
+        propagate: ['correlationId', 'userId'],
         logging: {
           onSuccess: 'debug',
           onError: 'error',
@@ -151,7 +151,7 @@ await syntropyLog.init({
         adapter: new AxiosAdapter(axios.create({ 
           baseURL: 'https://api.payments.com' 
         })),
-        propagate: [\correlationId', 'paymentId'],
+        propagate: ['correlationId', 'paymentId'],
         logging: {
           onSuccess: 'info', // More verbose for payments
           onError: 'warn',
@@ -209,6 +209,33 @@ class CustomHttpAdapter implements IHttpAdapter {
 const adapter = new CustomHttpAdapter();
 ```
 
+## 🎯 Logging Configuration
+
+Fine-tune what gets logged for each HTTP operation:
+
+```typescript
+await syntropyLog.init({
+  http: {
+    instances: [
+      {
+        instanceName: 'api',
+        adapter: new AxiosAdapter(axios.create()),
+        logging: {
+          onRequest: 'info',      // Log when request starts
+          onSuccess: 'debug',     // Log successful responses
+          onError: 'error',       // Log errors
+          logRequestHeaders: false,  // Don't log request headers
+          logRequestBody: true,      // Log request body
+          logResponseHeaders: false, // Don't log response headers
+          logResponseBody: false,    // Don't log response body
+          logDuration: true,         // Log request duration
+        },
+      },
+    ],
+  },
+});
+```
+
 ## 🔒 Security Features
 
 ### Header Redaction
@@ -220,7 +247,7 @@ await syntropyLog.init({
         instanceName: 'api',
         adapter: new AxiosAdapter(axios.create()),
         logging: {
-          redactHeaders: [\authorization', 'cookie', 'x-api-key'],
+          redactHeaders: ['authorization', 'cookie', 'x-api-key'],
           logRequestHeaders: true,
         },
       },
@@ -234,6 +261,32 @@ await httpClient.request({
     'Authorization': 'Bearer secret-token', // Will show as "***"
     'Content-Type': 'application/json',     // Will show normally
   },
+});
+```
+
+### Body Masking
+```typescript
+await syntropyLog.init({
+  masking: {
+    fields: ['password', 'token', 'creditCard'],
+  },
+  http: {
+    instances: [
+      {
+        instanceName: 'api',
+        adapter: new AxiosAdapter(axios.create()),
+        logging: {
+          logRequestBody: true,
+        },
+      },
+    ],
+  },
+});
+
+// Sensitive data in request body is automatically masked
+await httpClient.post('/users', {
+  email: 'user@example.com',
+  password: 'secret123', // Will show as "***"
 });
 ```
 
@@ -263,6 +316,28 @@ await httpClient.get('/api/users');
 // Logs: "HTTP Response: 200 OK (45ms)"
 ```
 
+## 🎯 Error Handling
+
+HTTP errors are automatically logged with context:
+
+```typescript
+try {
+  await httpClient.get('/api/users');
+} catch (error) {
+  // Error is automatically logged with:
+  // - Request details (method, URL, headers)
+  // - Response details (status, body)
+  // - Duration
+  // - Full context (correlation ID, etc.)
+  
+  // You can also log additional context
+  logger.error({ err: error }, 'API call failed', {
+    operation: 'fetch_users',
+    retryCount: 3,
+  });
+}
+```
+
 ## 🔧 Configuration Options
 
 ```typescript
@@ -273,7 +348,7 @@ await syntropyLog.init({
         instanceName: 'api',
         adapter: new AxiosAdapter(axios.create()),
         isDefault: true,
-        propagate: [\correlationId', 'userId', 'tenantId'],
+        propagate: ['correlationId', 'userId', 'tenantId'],
         logging: {
           onRequest: 'info',
           onSuccess: 'debug',
@@ -283,7 +358,7 @@ await syntropyLog.init({
           logResponseHeaders: false,
           logResponseBody: false,
           logDuration: true,
-          redactHeaders: [\authorization'],
+          redactHeaders: ['authorization'],
         },
         timeout: 5000,
         retries: 3,
@@ -304,9 +379,36 @@ await syntropyLog.init({
 6. **Handle errors gracefully** - Use try-catch blocks for error handling
 7. **Use adapters** - Leverage the adapter pattern for framework agnosticism
 
+## 🔍 Debugging HTTP Calls
+
+```typescript
+// Enable verbose logging for debugging
+await syntropyLog.init({
+  http: {
+    instances: [
+      {
+        instanceName: 'api',
+        adapter: new AxiosAdapter(axios.create()),
+        logging: {
+          onRequest: 'debug',
+          onSuccess: 'debug',
+          onError: 'debug',
+          logRequestHeaders: true,
+          logRequestBody: true,
+          logResponseHeaders: true,
+          logResponseBody: true,
+        },
+      },
+    ],
+  },
+});
+
+// All HTTP operations will be logged in detail
+```
+
 ## ⚡ Performance Considerations
 
-- **Minimal overhead** - HTTP instrumentation adds less than 1ms per request
+- **Minimal overhead** - HTTP instrumentation adds <1ms per request
 - **Connection pooling** - Adapters reuse connections when possible
 - **Async operations** - All HTTP calls are non-blocking
-- **Memory efficient** - Singleton pattern prevents connection leaks
+- **Memory efficient** - Singleton pattern prevents connection leaks 
