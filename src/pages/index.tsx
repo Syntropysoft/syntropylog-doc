@@ -13,9 +13,8 @@ function HomepageHeader() {
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
         <img 
-          src="/img/syntropylog-logo.png" 
+          src="./img/syntropylog-logo.png" 
           alt="SyntropyLog Logo" 
-          className={styles.heroLogo}
           width="200"
           height="200"
         />
