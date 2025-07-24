@@ -9,17 +9,19 @@ description: Complete examples demonstrating SyntropyLog features
 
 Complete examples demonstrating SyntropyLog features and best practices.
 
+## Testing Overview
+
+**[Testing Overview](./testing-overview)** - Comprehensive guide to testing with SyntropyLog, including framework-agnostic mocks, spy function injection, and best practices.
+
 ## Testing Examples
 
-### **✅ Complete & Tested**
+### **✅ Complete & Tested (28-32)**
 
 - **[Example 28: Testing patterns with Vitest](./testing-patterns-vitest)** - Declarative testing with Vitest and SyntropyLogMock
 - **[Example 29: Testing patterns with Jest](./testing-patterns-jest)** - Declarative testing with Jest and SyntropyLogMock
 - **[Example 30: Testing Redis context patterns](./testing-redis-context)** - Testing Redis context with BeaconRedisMock
-
-### **🚧 Coming Soon**
-
-- **[Example 31: Advanced testing scenarios](./advanced-testing)** - Complex testing patterns and scenarios
+- **[Example 31: Testing serializers](./testing-serializers)** - Testing custom serialization logic with MockSerializerRegistry
+- **[Example 32: Testing transport concepts](./testing-transports-concepts)** - Understanding transports as spies and testing patterns
 
 ## Core Framework Examples
 
@@ -41,6 +43,8 @@ Start with the testing examples to understand how to write clean, declarative te
 1. **[Example 28: Vitest Testing](./testing-patterns-vitest)** - Learn zero boilerplate testing
 2. **[Example 29: Jest Testing](./testing-patterns-jest)** - Apply the same patterns with Jest
 3. **[Example 30: Redis Context](./testing-redis-context)** - Test Redis operations without external dependencies
+4. **[Example 31: Serializers Testing](./testing-serializers)** - Test custom serialization logic
+5. **[Example 32: Transport Concepts](./testing-transports-concepts)** - Understand transports as spies
 
 ## Key Principles
 
