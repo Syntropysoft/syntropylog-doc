@@ -8,6 +8,12 @@ const config: Config = {
   title: 'SyntropyLog',
   tagline: 'From Chaos to Clarity - The Observability Framework for High-Performance Teams',
   favicon: '/favicon.ico',
+  
+  // Version information
+  customFields: {
+    version: '0.6.16',
+    releaseDate: '2025-01-24',
+  },
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -98,6 +104,11 @@ const config: Config = {
           href: 'https://www.npmjs.com/package/syntropylog',
           label: 'NPM',
           position: 'right',
+        },
+        {
+          type: 'html',
+          position: 'right',
+          value: '<span class="version-badge">v0.6.16</span>',
         },
       ],
     },
