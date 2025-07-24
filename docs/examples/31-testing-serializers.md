@@ -9,6 +9,8 @@ description: Testing custom serialization logic with MockSerializerRegistry
 
 This example demonstrates how to test custom serialization logic using `MockSerializerRegistry` and framework-agnostic testing patterns.
 
+> **📦 Version**: This example corresponds to **SyntropyLog v0.6.16**
+
 ## Overview
 
 Serializers are functions that transform complex objects into strings for logging. This example shows how to:

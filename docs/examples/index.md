@@ -9,6 +9,8 @@ description: Complete examples demonstrating SyntropyLog features
 
 Complete examples demonstrating SyntropyLog features and best practices.
 
+> **📦 Version**: This documentation corresponds to **SyntropyLog v0.6.16**
+
 ## Testing Overview
 
 **[Testing Overview](./testing-overview)** - Comprehensive guide to testing with SyntropyLog, including framework-agnostic mocks, spy function injection, and best practices.

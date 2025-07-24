@@ -9,6 +9,8 @@ description: Comprehensive guide to testing with SyntropyLog
 
 SyntropyLog provides a comprehensive testing framework that makes testing observability code simple, fast, and reliable.
 
+> **📦 Version**: This documentation corresponds to **SyntropyLog v0.6.16**
+
 ## Philosophy
 
 ### **Silent Observer Principle**
