@@ -8,10 +8,12 @@ sidebar_label: Getting Started
 
 Get started with SyntropyLog in **30 seconds** with this quick start guide.
 
+> **🔒 Enterprise Security**: SyntropyLog v0.7.0 includes automated security scanning, dependency vulnerability checks, and comprehensive testing coverage (88.93%).
+
 ## 🚀 Installation
 
 ```bash
-npm install @syntropylog/core
+npm install syntropylog@0.7.0
 ```
 
 ## 📝 Basic Example

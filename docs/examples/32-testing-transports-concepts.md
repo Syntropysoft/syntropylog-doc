@@ -9,7 +9,7 @@ description: Understanding transports as spies and testing patterns
 
 This example demonstrates the conceptual understanding of transports and how to test them using framework-agnostic patterns.
 
-> **📦 Version**: This example corresponds to **SyntropyLog v0.6.16**
+> **📦 Version**: This example corresponds to **SyntropyLog v0.7.0**
 
 ## Overview
 

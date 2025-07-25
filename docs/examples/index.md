@@ -9,7 +9,7 @@ description: Complete examples demonstrating SyntropyLog features
 
 Complete examples demonstrating SyntropyLog features and best practices.
 
-> **📦 Version**: This documentation corresponds to **SyntropyLog v0.6.16**
+> **📦 Version**: This documentation corresponds to **SyntropyLog v0.7.0**
 
 ## Testing Overview
 

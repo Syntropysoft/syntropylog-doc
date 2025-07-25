@@ -9,7 +9,7 @@ description: Testing custom serialization logic with MockSerializerRegistry
 
 This example demonstrates how to test custom serialization logic using `MockSerializerRegistry` and framework-agnostic testing patterns.
 
-> **📦 Version**: This example corresponds to **SyntropyLog v0.6.16**
+> **📦 Version**: This example corresponds to **SyntropyLog v0.7.0**
 
 ## Overview
 
