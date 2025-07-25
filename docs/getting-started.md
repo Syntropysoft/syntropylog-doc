@@ -13,7 +13,7 @@ Get started with SyntropyLog in **30 seconds** with this quick start guide.
 ## 🚀 Installation
 
 ```bash
-npm install syntropylog@0.7.0
+npm install syntropylog
 ```
 
 ## 📝 Basic Example
