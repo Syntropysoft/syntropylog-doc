@@ -4,6 +4,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
+const LATEST_VERSION = '0.7.0';
+
 const config: Config = {
   title: 'SyntropyLog',
   tagline: 'From Chaos to Clarity - The Observability Framework for High-Performance Teams',
@@ -11,8 +13,8 @@ const config: Config = {
   
   // Version information
   customFields: {
-    version: '0.6.16',
-    releaseDate: '2025-01-24',
+    version: LATEST_VERSION,
+    releaseDate: '2025-07-25',
   },
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -53,21 +55,7 @@ const config: Config = {
           editUrl:
             'https://github.com/Syntropysoft/SyntropyLog/tree/main/docs-docusaurus/',
         },
-        blog: {
-          showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/Syntropysoft/SyntropyLog/tree/main/docs-docusaurus/',
-          // Useful options to enforce blogging best practices
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
-        },
+        blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -94,7 +82,6 @@ const config: Config = {
           label: 'Documentation',
         },
         { to: '/examples', label: 'Examples', position: 'left' },
-        { to: '/blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/Syntropysoft/SyntropyLog',
           label: 'GitHub',
@@ -108,7 +95,7 @@ const config: Config = {
         {
           type: 'html',
           position: 'right',
-          value: '<span class="version-badge">v0.6.16</span>',
+          value: `<span class="version-badge">v${LATEST_VERSION}</span>`,
         },
       ],
     },
@@ -152,10 +139,6 @@ const config: Config = {
         {
           title: 'Resources',
           items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
             {
               label: 'Examples Repository',
               href: 'https://github.com/Syntropysoft/syntropylog-examples-',
