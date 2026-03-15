@@ -8,6 +8,8 @@ sidebar_label: Boilerplate
 
 Use these patterns in **every** application (development and production): init with `ready`/`error`, graceful shutdown, and (for HTTP servers) a **context middleware** so each request has a correlation ID.
 
+**Minimal setup** = configuration + events (`ready`/`error`) + wait for initialization + context middleware. With that in place, you're ready to use `getLogger()` and context everywhere — observability spreads across your app without repeating setup in every file.
+
 ## Why it matters
 
 Without proper shutdown handling:
