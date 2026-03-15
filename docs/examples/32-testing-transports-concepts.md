@@ -9,8 +9,6 @@ description: Understanding transports as spies and testing patterns
 
 This example demonstrates the conceptual understanding of transports and how to test them using framework-agnostic patterns.
 
-> **📦 Version**: This example corresponds to **SyntropyLog v0.7.0**
-
 ## Overview
 
 Transports are essentially **spies** - they capture and store log entries for inspection. This example shows how to:
@@ -335,16 +333,14 @@ No external services needed - everything runs in memory.
 
 Framework errors are reported but never interrupt the application flow.
 
-## Related Examples
+## Related
 
-- **[Example 28: Vitest Testing](./testing-patterns-vitest)** - Basic testing patterns
-- **[Example 29: Jest Testing](./testing-patterns-jest)** - Jest-specific patterns
-- **[Example 30: Redis Context](./testing-redis-context)** - Redis testing patterns
-- **[Example 31: Serializers Testing](./testing-serializers)** - Serializer testing patterns
+- **Runnable**: [syntropylog-examples](https://github.com/Syntropysoft/syntropylog-examples) `16-testing-transports-concepts` (and 13–15: Vitest, Jest, serializers)
+- **Docs**: [Testing with Vitest](./testing-patterns-vitest), [Testing with Jest](./testing-patterns-jest), [Testing serializers](./testing-serializers)
 
 ## Next Steps
 
-1. **Run the example**: `cd 32-testing-transports-concepts && npm test`
+1. **Run the runnable example**: In [syntropylog-examples](https://github.com/Syntropysoft/syntropylog-examples), `cd 16-testing-transports-concepts` then `npm install` and `npm test`
 2. **Explore the code**: Review the notification service and tests
 3. **Apply to your project**: Use these patterns in your own transport testing
 4. **Extend the patterns**: Add more complex notification scenarios

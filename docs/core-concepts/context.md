@@ -1,5 +1,6 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
+description: Context management — correlation ID, transaction ID, contextManager.run(), withContext middleware. Propagate context across your app.
 ---
 
 # Context Management
@@ -16,130 +17,42 @@ The context system enables:
 
 ## 🚀 Basic Usage
 
+Get the context manager after initialization (`ready`). Use `run(callback)` to execute code with a dedicated context (and correlation ID). Inside the callback, set context and use the logger; all logs share that context.
+
 ```typescript
 import { syntropyLog } from 'syntropylog';
 
-// Initialize with context configuration
-await syntropyLog.init({
-  context: {
-    correlationIdHeader: 'X-Correlation-ID',
-  },
-});
-
-// Get context manager
+// After init and ready:
 const contextManager = syntropyLog.getContextManager();
 
-// Set context data
-contextManager.set('userId', 123);
-contextManager.set('requestId', 'req-456');
-contextManager.set('sessionId', 'sess-789');
+await contextManager.run(async () => {
+  contextManager.set('userId', 123);
+  contextManager.set('requestId', 'req-456');
 
-// Context is automatically included in all logs
-const logger = syntropyLog.getLogger();
-logger.info('User authenticated successfully');
+  const logger = syntropyLog.getLogger('api');
+  logger.info('User authenticated successfully');
+  // All logs in this run() share the same correlation ID
+});
 ```
 
-## 🔗 Automatic Correlation
+## 🔗 Correlation and scoped context
 
-SyntropyLog automatically generates and propagates correlation IDs:
+Use `contextManager.run(callback)` so that each logical flow (e.g. one HTTP request) has its own correlation ID. The framework generates or propagates the correlation ID within that scope.
 
 ```typescript
-// Correlation ID is automatically generated for each request
-const correlationId = contextManager.getCorrelationId();
+const contextManager = syntropyLog.getContextManager();
 
-// All subsequent operations use the same correlation ID
-logger.info('Processing user request');
-await httpClient.get('/api/users');
-await redis.set('user:123', userData);
-await broker.publish('user.updated', event);
+await contextManager.run(async () => {
+  const correlationId = contextManager.getCorrelationId();
+  const headerName = contextManager.getCorrelationIdHeaderName(); // e.g. 'x-correlation-id'
 
-// All logs and operations share the same correlation ID
-```
-
-## 🌐 HTTP Context Propagation
-
-Context automatically propagates through HTTP calls:
-
-```typescript
-// Configure HTTP client with context propagation
-await syntropyLog.init({
-  http: {
-    instances: [
-      {
-        instanceName: 'api',
-        adapter: new AxiosAdapter(axios.create()),
-        propagate: ['correlationId', 'userId', 'tenantId'],
-      },
-    ],
-  },
-});
-
-// Context is automatically added to HTTP headers
-const httpClient = syntropyLog.getHttp('api');
-await httpClient.request({
-  method: 'GET',
-  url: '/api/users',
-  // Headers automatically include:
-  // X-Correlation-ID: abc-123-def-456
-  // X-User-ID: 123
-  // X-Tenant-ID: tenant-1
+  const logger = syntropyLog.getLogger('main');
+  logger.info('Processing request');
+  // Use correlationId or headerName to inject into HTTP headers, message metadata, etc.
 });
 ```
 
-## 📡 Message Broker Context Propagation
-
-Context flows through message brokers:
-
-```typescript
-// Configure broker with context propagation
-await syntropyLog.init({
-  brokers: {
-    instances: [
-      {
-        instanceName: 'events',
-        adapter: new KafkaAdapter(kafkaConfig),
-        propagate: ['correlationId', 'userId', 'eventType'],
-      },
-    ],
-  },
-});
-
-// Context is automatically included in messages
-const broker = syntropyLog.getBroker('events');
-await broker.publish('user.created', {
-  userId: 123,
-  email: 'user@example.com',
-  // Message automatically includes correlation ID and context
-});
-```
-
-## 🗄️ Redis Context Propagation
-
-Context is included in Redis operations:
-
-```typescript
-// Configure Redis with context logging
-await syntropyLog.init({
-  redis: {
-    instances: [
-      {
-        instanceName: 'cache',
-        url: 'redis://localhost:6379',
-        logging: {
-          onSuccess: 'debug',
-          onError: 'error',
-          logCommandValues: true,
-        },
-      },
-    ],
-  },
-});
-
-// Context is automatically logged with Redis operations
-const redis = syntropyLog.getRedis('cache');
-await redis.set('user:123', userData);
-// Log includes correlation ID and context
-```
+**HTTP / Brokers / Redis:** The library does **not** provide `getHttp()`, `getBroker()`, or `getRedis()`. Use your own clients and inject the correlation ID (e.g. via Axios interceptors) using `getCorrelationId()` and `getCorrelationIdHeaderName()`. See [HTTP instrumentation](/docs/core-concepts/http-instrumentation).
 
 ## 🏗️ Singleton Pattern
 
@@ -183,36 +96,42 @@ contextManager.set('user', {
 contextManager.set('permissions', ['read', 'write', 'delete']);
 ```
 
-## 🔄 Context Lifecycle
+## 🔄 Context lifecycle with `run()`
 
-### Request Context
+Use `run()` so each request or job has its own context and correlation ID. A reusable **context middleware** pattern: capture the correlation ID from the incoming header when present (using the configured `getCorrelationIdHeaderName()`); if absent, `getCorrelationId()` generates one.
+
 ```typescript
-// Context is automatically created for each request
+function withContext(
+  contextManager: ReturnType<typeof syntropyLog.getContextManager>,
+  handler: () => Promise<void>,
+  options?: { correlationId?: string }
+) {
+  return contextManager.run(async () => {
+    if (options?.correlationId != null && options.correlationId !== '') {
+      contextManager.setCorrelationId(options.correlationId);
+    }
+    contextManager.getCorrelationId(); // ensure ID exists (generate if not set)
+    await handler();
+  });
+}
+
+// Express/Fastify: one run() per request, correlation ID from header or generated
+const contextManager = syntropyLog.getContextManager();
 app.use((req, res, next) => {
-  // SyntropyLog automatically generates correlation ID
-  // and sets up context for this request
-  
-  // Add request-specific data
-  contextManager.set('userId', req.user?.id);
-  contextManager.set('ip', req.ip);
-  contextManager.set('userAgent', req.get('User-Agent'));
-  
-  next();
+  const fromHeader = req.get(contextManager.getCorrelationIdHeaderName()) ?? undefined;
+  withContext(contextManager, () => next(), { correlationId: fromHeader });
 });
 ```
 
-### Background Operations
-```typescript
-// Context persists across async operations
-setTimeout(() => {
-  // Same correlation ID and context
-  logger.info('Background operation completed');
-}, 1000);
+For a background job, call `run()` directly and optionally set other context:
 
-// Context works with promises
-Promise.resolve().then(() => {
-  // Context is still available
-  logger.info('Promise resolved');
+```typescript
+await contextManager.run(async () => {
+  contextManager.set('jobId', 'job-123');
+  const logger = syntropyLog.getLogger('worker');
+  logger.info('Job started');
+  // ... work ...
+  logger.info('Job completed');
 });
 ```
 
@@ -268,13 +187,13 @@ logger.error('Database connection failed');
 
 ### Runtime Configuration
 
-You can modify the loggingMatrix at runtime:
+You can change which context fields are included per level at runtime with `reconfigureLoggingMatrix()`:
 
 ```typescript
 // Change logging matrix dynamically
-syntropyLog.updateLoggingMatrix({
-  info: ['correlationId', 'serviceName', 'userId'], // Add userId to info logs
-  error: ['correlationId', 'userId', 'errorCode'], // Reduce error context
+syntropyLog.reconfigureLoggingMatrix({
+  info: ['correlationId', 'serviceName', 'userId'],
+  error: ['correlationId', 'userId', 'errorCode'],
 });
 
 // The changes take effect immediately
@@ -288,12 +207,6 @@ await syntropyLog.init({
   context: {
     correlationIdHeader: 'X-Correlation-ID',
     transactionIdHeader: 'X-Trace-ID',
-    enableCorrelation: true,
-    correlationIdGenerator: () => `req-${Date.now()}-${Math.random()}`,
-    defaultContext: {
-      serviceName: 'my-app',
-      environment: 'production',
-    },
   },
 });
 ```
@@ -307,24 +220,19 @@ await syntropyLog.init({
 5. **Use correlation IDs** - Always enable correlation for distributed tracing
 6. **Clean up context** - Context is automatically cleaned up per request
 
-## 🔍 Debugging Context
+## 🔍 Reading context
 
 ```typescript
 // Get all current context
 const allContext = contextManager.getAll();
-console.log('Current context:', allContext);
 
 // Get specific context value
 const userId = contextManager.get('userId');
 
-// Check if context exists
-const hasUserId = contextManager.has('userId');
-
-// Remove specific context
-contextManager.remove('userId');
-
-// Clear all context
-contextManager.clear();
+// Correlation and headers (for outbound HTTP / messaging)
+const correlationId = contextManager.getCorrelationId();
+const headerName = contextManager.getCorrelationIdHeaderName();
+const traceHeaders = contextManager.getTraceContextHeaders();
 ```
 
 ## ⚡ Performance Considerations

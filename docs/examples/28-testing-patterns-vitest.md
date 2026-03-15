@@ -12,7 +12,7 @@ This example demonstrates how to write **declarative, behavior-focused tests** f
 
 ## 🎯 What You'll Learn
 
-- How to use `SyntropyLogMock` to avoid framework initialization issues
+- How to use the mock from `createTestHelper()` to avoid framework initialization issues
 - How to write tests that focus on **behavior**, not implementation
 - How to use Vitest-specific features with SyntropyLog
 - How to avoid testing external dependencies (Redis, brokers, etc.)
@@ -110,16 +110,15 @@ Create `tsconfig.json`:
 
 ## 🧪 Testing Patterns
 
-### 1. Basic Test Setup with SyntropyLogMock
+### 1. Basic Test Setup with the test helper
 
 ```typescript
 import { describe, it, expect, beforeEach } from 'vitest';
+import { createTestHelper } from 'syntropylog/testing';
 import { UserService } from '../src/index';
-const { createTestHelper } = require('syntropylog/testing');
 
-// Create test helper - this creates a SyntropyLogMock that simulates the entire framework
-// No real initialization/shutdown needed - everything is in memory
-const testHelper = createTestHelper();
+// createTestHelper() returns a mock that simulates the framework (no init/shutdown)
+const testHelper = createTestHelper(vi.fn);
 
 describe('UserService', () => {
   let userService: UserService;
@@ -163,9 +162,9 @@ it('should create user with service helper', async () => {
 });
 ```
 
-## 🔍 Understanding the SyntropyLogMock
+## 🔍 Understanding the mock from createTestHelper()
 
-The `SyntropyLogMock` is a complete simulation of the SyntropyLog framework that runs entirely in memory. Here's what it provides:
+The mock returned by `createTestHelper()` (or `createSyntropyLogMock()`) simulates the SyntropyLog API in memory. Here's what it provides:
 
 ### What the Mock Simulates
 
@@ -299,7 +298,7 @@ beforeEach(() => {
 2. **Explore the code**: Look at `src/index.ts` to understand the service
 3. **Modify tests**: Try adding your own test cases
 4. **Check coverage**: `npm run test:coverage`
-5. **Try other examples**: Check examples 29 (Jest) and 30 (Redis context)
+5. **Runnable examples**: [syntropylog-examples](https://github.com/Syntropysoft/syntropylog-examples) 13 (Vitest), 14 (Jest), 15 (serializers), 16 (transports)
 
 ## 🤝 Contributing
 
@@ -311,10 +310,10 @@ When adding new tests:
 4. Keep tests simple and readable
 5. Use the provided helpers for consistent setup
 
-## 🔗 Related Examples
+## 🔗 Related
 
-- **[Testing patterns with Jest](./testing-patterns-jest)**
-- **[Redis context testing](./testing-redis-context)**
+- **Runnable**: [syntropylog-examples](https://github.com/Syntropysoft/syntropylog-examples) 13–16 (`13-testing-patterns`, `14-testing-patterns-jest`, `15-testing-serializers`, `16-testing-transports-concepts`)
+- **Docs**: [Testing with Jest](./testing-patterns-jest), [Testing serializers](./testing-serializers), [Testing transport concepts](./testing-transports-concepts)
 - **[Advanced testing scenarios](./advanced-testing)** (Coming Soon)
 
 ---

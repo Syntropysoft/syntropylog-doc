@@ -2,40 +2,18 @@
 id: advanced-testing
 title: Advanced Testing Scenarios
 sidebar_label: Advanced Testing
-description: Advanced testing patterns and scenarios for complex SyntropyLog applications
+description: Advanced testing patterns (coming soon)
 ---
 
 # Advanced Testing Scenarios
 
-> **Coming Soon** - This example will cover advanced testing scenarios including:
-> 
-> - Complex integration testing patterns
-> - Performance testing with mocks
-> - End-to-end testing strategies
-> - Custom mock implementations
-> - Testing with multiple services
-> - Advanced context management testing
+> **Coming Soon** — This page will cover advanced testing scenarios (integration, performance, custom mocks, E2E).
 
-## What's Coming
+The **runnable examples** are in **[syntropylog-examples](https://github.com/Syntropysoft/syntropylog-examples)** (00–17). Testing examples: **13–16** (`13-testing-patterns`, `14-testing-patterns-jest`, `15-testing-serializers`, `16-testing-transports-concepts`). See the repo README for the full list.
 
-This example will demonstrate how to handle complex testing scenarios that go beyond basic unit testing:
+## Related
 
-### Planned Features
-
-- **Complex Integration Testing** - Testing multiple services working together
-- **Performance Testing** - Using mocks for performance validation
-- **Custom Mock Extensions** - Creating specialized mocks for your needs
-- **End-to-End Testing** - Testing complete workflows with mocks
-- **Advanced Context Patterns** - Testing complex context scenarios
-
-## Related Examples
-
-- **[Testing patterns with Vitest](./testing-patterns-vitest)**
-- **[Testing patterns with Jest](./testing-patterns-jest)**
-- **[Redis context testing](./testing-redis-context)**
-
----
-
-:::info Coming Soon
-This example is currently in development. Check back soon for advanced testing patterns and scenarios.
-::: 
+- [Examples](/docs/examples/) — Full list and testing guides
+- [Testing overview](./testing-overview)
+- [Testing with Vitest](./testing-patterns-vitest)
+- [Testing with Jest](./testing-patterns-jest)

@@ -1,5 +1,6 @@
 ---
 sidebar_position: 1
+description: SyntropyLog logger — structured logging, log levels, transports, multiple loggers. Context-aware and correlation ID in every log.
 ---
 
 # Logger
@@ -16,19 +17,23 @@ SyntropyLog's logger is designed to be:
 
 ## 🚀 Basic Usage
 
-```typescript
-import { syntropyLog } from 'syntropylog';
+Initialize once and wait for the `ready` event before using the logger. Use `getLogger(name)` to get a logger instance.
 
-// Initialize SyntropyLog
+```typescript
+import { syntropyLog, ClassicConsoleTransport } from 'syntropylog';
+
+syntropyLog.on('ready', () => {});
+syntropyLog.on('error', (err) => console.error(err));
 await syntropyLog.init({
   logger: {
     serviceName: 'my-app',
     level: 'info',
+    transports: [new ClassicConsoleTransport()],
   },
 });
 
-// Get logger instance
-const logger = syntropyLog.getLogger();
+// Get logger instance (use only after ready)
+const logger = syntropyLog.getLogger('main');
 
 // Basic logging
 logger.info('Application started');
@@ -39,15 +44,21 @@ logger.error('Database connection failed', {
 });
 ```
 
-## 🏗️ Singleton Pattern
+## Multiple loggers (N loggers, same correlation ID)
 
-SyntropyLog uses a singleton pattern for logger instances to prevent memory leaks and ensure consistency:
+You can create **several loggers** with different names (e.g. one for the service, one for Axios, one for Kafka, one for DB). Each identifies a subsystem; they all share the **same correlation ID** when used inside the same `contextManager.run()`, so you can trace the full journey of a request across systems. You can call `getLogger(name)` from **anywhere** in your app — the logger keeps the same config; a small logger config module and an enum for names keeps things ordered and explicit. Configure different transports per logger name or use a transport pool with `.override()` / `.add()` / `.remove()` per call.
+
+See **[Multiple loggers and transports](/docs/core-concepts/multiple-loggers-and-transports)** for patterns (centralized loggers + enum, named loggers + shared transports, transport pool + per-call routing, different transport sets per logger name) and how the correlation ID travels.
+
+## 🏗️ Singleton pattern per name
+
+SyntropyLog caches logger instances by name (and bindings) to avoid creating new instances on every call:
 
 ```typescript
 // First call - creates and returns new instance
 const logger1 = syntropyLog.getLogger('user-service');
 
-// Second call - returns the SAME instance (singleton)
+// Second call - returns the SAME instance (cached by name)
 const logger2 = syntropyLog.getLogger('user-service');
 
 // logger1 === logger2 ✅
@@ -68,42 +79,21 @@ logger.fatal('Severe error events that will prevent the application from running
 
 ## 🎨 Transports
 
-SyntropyLog supports multiple transport types for different environments:
+Configure one or more transports in `logger.transports`. Use a console transport for development (e.g. `PrettyConsoleTransport`) or production (e.g. `ClassicConsoleTransport`), or both.
 
-### Pretty Console Transport (Development)
 ```typescript
-import { PrettyConsoleTransport } from 'syntropylog';
+import { syntropyLog, ClassicConsoleTransport } from 'syntropylog';
 
 await syntropyLog.init({
   logger: {
-    transports: [new PrettyConsoleTransport()],
-  },
-});
-```
-
-### Classic Console Transport (Production)
-```typescript
-import { ClassicConsoleTransport } from 'syntropylog';
-
-await syntropyLog.init({
-  logger: {
+    serviceName: 'my-app',
+    level: 'info',
     transports: [new ClassicConsoleTransport()],
   },
 });
 ```
 
-### Multiple Transports
-```typescript
-await syntropyLog.init({
-  logger: {
-    transports: [
-      new PrettyConsoleTransport(), // Development
-      new ClassicConsoleTransport(), // Production JSON
-      // Custom transports for external services
-    ],
-  },
-});
-```
+See the package exports for other built-in transports and the [Configuration](/docs/configuration/) guide.
 
 ## 🧠 Smart Context Logging with LoggingMatrix
 
@@ -158,16 +148,16 @@ logger.error('Database connection failed');
 
 ### Runtime Configuration
 
-You can modify the loggingMatrix dynamically:
+You can modify the logging matrix at runtime with `reconfigureLoggingMatrix()`:
 
 ```typescript
 // Add more context to info logs during debugging
-syntropyLog.updateLoggingMatrix({
+syntropyLog.reconfigureLoggingMatrix({
   info: ['correlationId', 'serviceName', 'userId', 'operation'],
 });
 
 // Reduce context in error logs for production
-syntropyLog.updateLoggingMatrix({
+syntropyLog.reconfigureLoggingMatrix({
   error: ['correlationId', 'userId', 'errorCode'],
 });
 
@@ -177,22 +167,26 @@ logger.info('Operation completed'); // Now includes userId and operation
 
 ## 🔒 Data Masking
 
-SyntropyLog automatically masks sensitive data:
+Configure masking in `init()` so sensitive fields are redacted before any transport:
 
 ```typescript
 await syntropyLog.init({
+  logger: { serviceName: 'my-app', level: 'info', transports: [new ClassicConsoleTransport()] },
   masking: {
-    fields: ['password', 'token', 'creditCard', 'ssn'],
-    replacement: '***',
+    enableDefaultRules: true,
+    rules: [
+      { pattern: /password|token|secret/i, strategy: 'password' },
+      { pattern: /creditCard|cardNumber/i, strategy: 'card' },
+    ],
   },
 });
 
-// Sensitive data is automatically masked
+// Sensitive data is automatically masked in log output
 logger.info('User created', {
   userId: 123,
   email: 'user@example.com',
-  password: 'secret123', // Will show as "***"
-  creditCard: '1234-5678-9012-3456' // Will show as "***"
+  password: 'secret123', // Masked in output
+  creditCard: '1234-5678-9012-3456', // Masked in output
 });
 ```
 
@@ -245,19 +239,15 @@ logger.info('API Request', {
 ```typescript
 await syntropyLog.init({
   logger: {
-    name: 'my-custom-logger',
     level: 'info', // 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'silent'
     serviceName: 'my-enterprise-app',
-    serviceVersion: '1.0.0',
-    environment: 'production',
     transports: [new ClassicConsoleTransport()],
     serializerTimeoutMs: 50, // Prevent slow serializers from blocking
-    prettyPrint: {
-      enabled: process.env.NODE_ENV !== 'production',
-    },
   },
 });
 ```
+
+See [Configuration](/docs/configuration/) for the full config shape.
 
 ## 🎯 Best Practices
 
@@ -266,4 +256,5 @@ await syntropyLog.init({
 3. **Structure your data** - Use objects for structured logging
 4. **Mask sensitive data** - Always configure data masking
 5. **Use correlation IDs** - Enable automatic correlation for distributed tracing
-6. **Choose the right transports** - Different transports for different environments 
+6. **Choose the right transports** — Different transports for different environments
+7. **Use multiple loggers** — One per subsystem (service, axios, kafka, etc.) with the same correlation ID; see [Multiple loggers and transports](/docs/core-concepts/multiple-loggers-and-transports)

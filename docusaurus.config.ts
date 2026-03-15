@@ -4,7 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
-const LATEST_VERSION = '0.7.0';
+const LATEST_VERSION = '0.12.x';
 
 const config: Config = {
   title: 'SyntropyLog',
@@ -14,7 +14,7 @@ const config: Config = {
   // Version information
   customFields: {
     version: LATEST_VERSION,
-    releaseDate: '2025-07-25',
+    releaseDate: '2025-03-14',
   },
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future

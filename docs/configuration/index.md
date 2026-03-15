@@ -2,177 +2,125 @@
 id: configuration
 title: Configuration Guide
 sidebar_label: Configuration
-description: Complete guide to configuring SyntropyLog for your application
+description: Configure SyntropyLog — logger, context, masking, logging matrix. Structured logging and correlation ID. Minimal and full config.
 ---
 
 # Configuration Guide
 
-This guide covers all aspects of configuring SyntropyLog for your application.
+SyntropyLog is configured in a single call to `syntropyLog.init(config)`. Only the **logger**, **context**, and optional blocks (**loggingMatrix**, **masking**, **shutdownTimeout**, callbacks) exist. There are no `http`, `redis`, or `brokers` blocks in the core.
 
-## Quick Configuration
+## Minimal config (copy-paste)
 
-For most applications, you'll want HTTP instrumentation and context management:
+The smallest setup: logger + context. Subscribe to `ready`/`error` before calling `init()` (see [Boilerplate](/docs/api-reference/boilerplate)).
 
 ```typescript
-import { syntropyLog, PrettyConsoleTransport } from 'syntropylog';
-import { AxiosAdapter } from '@syntropylog/adapters';
-import axios from 'axios';
+await syntropyLog.init({
+  logger: { serviceName: 'my-app', level: 'info', transports: [new ClassicConsoleTransport()] },
+  context: { correlationIdHeader: 'x-correlation-id' },
+});
+```
+
+## Quick configuration
+
+```typescript
+import { syntropyLog, ClassicConsoleTransport } from 'syntropylog';
+
+syntropyLog.on('ready', () => {});
+syntropyLog.on('error', (err) => console.error(err));
 
 await syntropyLog.init({
   logger: {
-    level: 'info',
     serviceName: 'my-app',
-    transports: [new PrettyConsoleTransport()],
+    level: 'info',
+    transports: [new ClassicConsoleTransport()],
+  },
+  context: {
+    correlationIdHeader: 'x-correlation-id',
+    transactionIdHeader: 'x-transaction-id',
   },
   loggingMatrix: {
     default: ['correlationId'],
-    error: ['*'], // Log everything on errors
-  },
-  http: {
-    instances: [
-      {
-        instanceName: 'myApi',
-        adapter: new AxiosAdapter(axios.create({ baseURL: 'https://api.example.com' })),
-      },
-    ],
+    error: ['*'],
   },
 });
 ```
 
-## Configuration Options
+## Configuration options
 
-### Logger Configuration
+### Logger
+
+| Option | Description |
+|--------|-------------|
+| `serviceName` | Service name included in logs. |
+| `level` | Minimum level: `'trace'`, `'debug'`, `'info'`, `'warn'`, `'error'`, `'fatal'`, `'silent'`. |
+| `transports` | Array of transport instances (e.g. `new ClassicConsoleTransport()`). |
+| `serializerTimeoutMs` | Serialization timeout (avoids blocking the event loop). |
+
+Use console transports for stdout (e.g. `ClassicConsoleTransport`, `PrettyConsoleTransport`). To send logs to external backends, use the **Universal Adapter** with a custom `executor`. See the package exports for available transports.
+
+### Context
+
+| Option | Description |
+|--------|-------------|
+| `correlationIdHeader` | Header name for the correlation ID (e.g. `'x-correlation-id'`). |
+| `transactionIdHeader` | Header name for the transaction ID (optional). |
+
+HTTP propagation is done with your own client (e.g. Axios interceptors) using `getContextManager().getCorrelationId()` and `getCorrelationIdHeaderName()`. See [HTTP instrumentation](/docs/core-concepts/http-instrumentation).
+
+### Logging Matrix
+
+Controls which context fields are included per level (without affecting masking or security):
 
 ```typescript
-logger: {
-  level: 'info',                    // Log level: 'debug', 'info', 'warn', 'error'
-  serviceName: 'my-app',            // Service name for correlation
-  transports: [new PrettyConsoleTransport()], // Logging transports
+loggingMatrix: {
+  default: ['correlationId'],
+  trace: ['*'],
+  debug: ['correlationId', 'userId', 'operation'],
+  info: ['correlationId', 'serviceName'],
+  warn: ['correlationId', 'userId', 'errorCode'],
+  error: ['*'],
+  fatal: ['*'],
 }
 ```
 
-### HTTP Configuration
+You can change it at runtime with `syntropyLog.reconfigureLoggingMatrix(matrix)`.
+
+### Masking
+
+To mask sensitive data in logs:
 
 ```typescript
-http: {
-  instances: [
-    {
-      instanceName: 'myApi',        // Unique name for this HTTP client
-      adapter: new AxiosAdapter(axios.create({ baseURL: 'https://api.example.com' })),
-    },
+masking: {
+  enableDefaultRules: true,
+  rules: [
+    { pattern: /password|token|secret/i, strategy: 'password' },
+    { pattern: /creditCard|cardNumber/i, strategy: 'card' },
   ],
+  maskChar: '*',
+  preserveLength: false,
+  regexTimeoutMs: 10,
+  onMaskingError: (err) => { /* optional */ },
 }
 ```
 
-### Redis Configuration
+### Shutdown and callbacks
 
-```typescript
-redis: {
-  instances: [
-    {
-      instanceName: 'cache',        // Unique name for this Redis instance
-      host: 'localhost',
-      port: 6379,
-    },
-    {
-      instanceName: 'session',      // Another Redis instance
-      host: 'localhost', 
-      port: 6380,
-    },
-  ],
-}
-```
+- `shutdownTimeout`: maximum time to wait during `shutdown()`.
+- `onLogFailure`, `onTransportError`, `onStepError`, `onSerializationFallback`: observability callbacks.
 
-### Broker Configuration
-
-```typescript
-brokers: {
-  instances: [
-    {
-      instanceName: 'events',       // Unique name for this broker
-      type: 'kafka',
-      config: {
-        clientId: 'my-app',
-        brokers: ['localhost:9092'],
-      },
-    },
-  ],
-}
-```
-
-## Advanced Configuration
-
-### Custom Serializers
-
-```typescript
-serializers: {
-  custom: {
-    mySerializer: {
-      serialize: (data) => JSON.stringify(data),
-      deserialize: (data) => JSON.parse(data),
-    },
-  },
-}
-```
-
-### Custom Transports
-
-```typescript
-transports: {
-  custom: {
-    myTransport: {
-      log: (level, message, meta) => {
-        // Custom logging logic
-      },
-    },
-  },
-}
-```
-
-## Environment-Specific Configuration
+## By environment
 
 ### Development
 
-```typescript
-const config = {
-  logger: {
-    level: 'debug',
-    transports: [new PrettyConsoleTransport()],
-  },
-  // Minimal configuration for development
-};
-```
+- Use level `debug` or `trace`, and a transport like `PrettyConsoleTransport` or `ColorfulConsoleTransport` for readable console output.
 
 ### Production
 
-```typescript
-const config = {
-  logger: {
-    level: 'info',
-    transports: [
-      new JsonConsoleTransport(),
-      new FileTransport({ filename: '/var/log/app.log' }),
-    ],
-  },
-  // Full configuration for production
-};
-```
+- Use level `info` or `warn`, and a structured transport (e.g. `ClassicConsoleTransport`) or the Universal Adapter to your backend (PostgreSQL, Elasticsearch, S3, etc.).
 
-## Testing Configuration
+## Next steps
 
-For testing, use the SyntropyLogMock:
-
-```typescript
-const { createTestHelper } = require('syntropylog/testing');
-const testHelper = createTestHelper();
-
-// No configuration needed - everything is mocked
-const service = new MyService(testHelper.mockSyntropyLog);
-```
-
-## Next Steps
-
-- **[Getting Started](../getting-started)** - Complete setup guide
-- **[API Reference](../api-reference)** - Full API documentation
-- **[Examples](../examples)** - Production-ready examples
-- **[Production Guide](../production)** - Production deployment guide 
+- [Getting Started](/docs/getting-started)
+- [API Reference](/docs/api-reference)
+- [Core concepts](/docs/core-concepts/logger)
+- [Production](/docs/production/)

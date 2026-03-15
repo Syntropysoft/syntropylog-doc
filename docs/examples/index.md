@@ -2,62 +2,51 @@
 id: examples
 title: Examples
 sidebar_label: Examples
-description: Complete examples demonstrating SyntropyLog features
+description: SyntropyLog examples 00–17 — setup, context, transports, HTTP correlation, testing, benchmark. Runnable code in syntropylog-examples.
 ---
 
 # SyntropyLog Examples
 
-Complete examples demonstrating SyntropyLog features and best practices.
+The **source of truth** for the example list is the **[syntropylog-examples](https://github.com/Syntropysoft/syntropylog-examples)** repository (see its README). All runnable examples use the current API: `syntropyLog.init({ logger, context })`, `getLogger()`, `getContextManager()`, no `getHttp`/`getBroker`/`getRedis` in core.
 
-> **📦 Version**: This documentation corresponds to **SyntropyLog v0.7.0**
+## Examples 00–17 (syntropylog-examples)
 
-## Testing Overview
+| # | Folder | What it shows |
+|---|--------|----------------|
+| **Fundamentals** |
+| 00 | `00-setup-initialization` | Init (ready/error), getLogger, shutdown |
+| 01 | `01-hello-world` | First log |
+| 02–09 | `02-basic-context` … `09-All-transports` | Context, levels, transports, logging matrix |
+| **Integration** |
+| 10–11 | `10-basic-http-correlation`, `11-axios-interceptors` | HTTP correlation via Axios interceptors |
+| 12 | `12-UniversalAdapter` | UniversalAdapter / custom backends |
+| **Testing** |
+| 13–16 | `13-testing-patterns` … `16-testing-transports-concepts` | Vitest, Jest, serializers, transport concepts |
+| **Benchmark** |
+| 17 | `17-benchmark` | SyntropyLog vs Pino vs Winston |
 
-**[Testing Overview](./testing-overview)** - Comprehensive guide to testing with SyntropyLog, including framework-agnostic mocks, spy function injection, and best practices.
+Run any example from its folder: `npm install` then `npm run dev` (or the script in that example’s README).
 
-## Testing Examples
+## Testing guides (this site)
 
-### **✅ Complete & Tested (28-32)**
+Supplementary guides that align with repo examples **13–16**:
 
-- **[Example 28: Testing patterns with Vitest](./testing-patterns-vitest)** - Declarative testing with Vitest and SyntropyLogMock
-- **[Example 29: Testing patterns with Jest](./testing-patterns-jest)** - Declarative testing with Jest and SyntropyLogMock
-- **[Example 30: Testing Redis context patterns](./testing-redis-context)** - Testing Redis context with BeaconRedisMock
-- **[Example 31: Testing serializers](./testing-serializers)** - Testing custom serialization logic with MockSerializerRegistry
-- **[Example 32: Testing transport concepts](./testing-transports-concepts)** - Understanding transports as spies and testing patterns
+- **[Testing overview](./testing-overview)** — Mocks, test helper, SpyTransport.
+- **[Testing with Vitest](./testing-patterns-vitest)** — Vitest patterns (repo: `13-testing-patterns`).
+- **[Testing with Jest](./testing-patterns-jest)** — Jest patterns (repo: `14-testing-patterns-jest`).
+- **[Testing Redis / cache context](./testing-redis-context)** — Context without a built-in Redis mock.
+- **[Testing serializers](./testing-serializers)** — Serialization tests (repo: `15-testing-serializers`).
+- **[Testing transport concepts](./testing-transports-concepts)** — Transports as spies (repo: `16-testing-transports-concepts`).
 
-## Core Framework Examples
+## Principles
 
-### **✅ Complete & Tested (00-13, 20-24)**
+- **Configure once** — `init()` with logger and context; use `getLogger()` and `getContextManager()` after `ready`.
+- **HTTP** — Use your own client (e.g. Axios) and inject correlation via interceptors; see repo examples 10–11.
+- **Testing** — Use `syntropylog/testing` (createTestHelper, SpyTransport); runnable tests in repo 13–16.
 
-- **00-09**: Core Framework Features - Basic setup, context, configuration
-- **10-13**: HTTP & Redis Integration - Framework agnosticism (Express, Fastify)
-- **20-24**: Message Brokers - Kafka, RabbitMQ, NATS with correlation
+## Related
 
-### **🚧 In Development (14-19, 25-27)**
-
-- **14-19**: Advanced Framework Features - NestJS, Koa, Hapi, custom serializers
-- **25-27**: Enterprise Patterns - Production configuration, advanced context
-
-## Getting Started
-
-Start with the testing examples to understand how to write clean, declarative tests:
-
-1. **[Example 28: Vitest Testing](./testing-patterns-vitest)** - Learn zero boilerplate testing
-2. **[Example 29: Jest Testing](./testing-patterns-jest)** - Apply the same patterns with Jest
-3. **[Example 30: Redis Context](./testing-redis-context)** - Test Redis operations without external dependencies
-4. **[Example 31: Serializers Testing](./testing-serializers)** - Test custom serialization logic
-5. **[Example 32: Transport Concepts](./testing-transports-concepts)** - Understand transports as spies
-
-## Key Principles
-
-- **Test behavior, not implementation** - Focus on what your code produces
-- **Use mocks for external dependencies** - No Redis, brokers, or HTTP servers needed
-- **Keep tests simple and readable** - Tests should read like specifications
-- **Zero boilerplate** - No initialization or shutdown in tests
-
-## Related Documentation
-
-- **[Getting Started](../getting-started)** - Complete setup guide
-- **[Configuration Guide](../configuration)** - Configuration options
-- **[API Reference](../api-reference)** - Full API documentation
-- **[Production Guide](../production)** - Production deployment 
+- [Getting Started](/docs/getting-started)
+- [Configuration](/docs/configuration/)
+- [API Reference](/docs/api-reference)
+- [Production](/docs/production/)
