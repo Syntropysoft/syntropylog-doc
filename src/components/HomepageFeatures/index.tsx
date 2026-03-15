@@ -11,12 +11,12 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Zero Boilerplate',
+    title: 'Minimal Setup',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Get started in 30 seconds with automatic context propagation and structured logging. 
-        Focus on your business logic, not observability setup.
+        One-time init, shutdown, and context middleware; then use <code>getLogger()</code> and context anywhere.
+        Focus on business logic, not repeated observability code.
       </>
     ),
   },

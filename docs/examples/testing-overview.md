@@ -21,7 +21,7 @@ From `syntropylog/testing`:
 
 The core package does **not** include Redis, HTTP, or broker mocks. Use your own mocks or stubs for those.
 
-## Zero boilerplate
+## No init in tests (zero boilerplate for tests)
 
 No init/shutdown in tests:
 

@@ -13,7 +13,7 @@ The context system enables:
 - **Automatic correlation** - Single ID connects all operations
 - **Context propagation** - Data flows through HTTP calls, message brokers, and Redis
 - **Framework agnostic** - Works with any Node.js application
-- **Zero boilerplate** - No manual context passing required
+- **No manual context passing** - Use `getLogger()` and `contextManager.run()` instead of passing context through every function
 
 ## 🚀 Basic Usage
 
